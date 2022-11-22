@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 DSRecouplingDashboard.Rproj
+.Rdata
+.httr-oauth
+.DS_Store
