@@ -1,0 +1,238 @@
+---
+title: "The Recoupling Dashboard"
+subtitle: "RIS-OECD Meeting"
+author: "Dennis Snower"
+institute: "Global Solutions Initiative Foundation, The New Institute"
+date: "2022/11/23"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  lib_dir: libs
+  slideNumberFormat: "%current%"
+highlightStyle: github
+highlightLines: true
+ratio: 16:9
+countIncrementalSlides: false
+---
+
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_solarized_light(
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "270", "270i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+class: center, middle
+
+# The Recoupling Dashboard
+
+
+
+---
+
+class: center, middle
+
+# Thinking beyond economic prosperity 
+
+.pull-left[
+
+"Money is not everything. The wellbeing of society also depends on access to education, a good health system, social participation and an intact environment. Such concerns are not systematically reflected in the measurement of gross domestic product.[...] 
+
+[...] I, therefore, welcome the Global Solutions Initiative's proposal to broaden our perspective.
+
+
+Olaf Scholz,
+Chancellor of Germany
+
+]
+
+.pull-right[
+
+<div align="center">
+<img src="downloads/2021-12-14-lebenslauf-olaf-scholz.jpeg" width=350>
+</div>
+]
+
+---
+
+# What is that all about?
+
+
+.pull-left[
+
+- Looking through the lens of complex and multidimensional efforts to measure wellbeing, there is plenty to suggest that growth is good. After all, richer societies normally also show high standards of social progress.
+
+- However, GDP is not a proper measure of social development. It can point out to a specific direction of countries performance but it cannot highlight the existence of opportunity, tolerance of diversity, social mobility, commitment to fairness, and dedication to democracy.* 
+
+]
+
+.pull-right[
+
+<div align="center">
+<img src="downloads/c.jpg" width=350>
+</div>
+]
+
+---
+
+# A measurement to ensure recoupling of economic and social progress
+
+.pull-left[
+
+- The Recoupling Dashboard is a country-specific research tool to measure the wellbeing of societies beyond GDP and illustrates the correlation of economic prosperity, social prosperity and environmental sustainability. 
+
+- It outlines social prosperity in two innovative new indexes (agency and solidarity) alongside two traditional indexes (economic prosperity through GDP and environmental performance) to capture the fundamental dimensions of human wellbeing.
+
+]
+
+.pull-right[
+
+<div align="center">
+<img src="downloads/SAGE-Framework.png" width=350>
+</div>
+]
+
+---
+
+# A
+
+.pull-left[
+
+- The Recoupling Dashboard’s innovative approach sheds light on the decoupling of societies and provides an empirical basis for mobilizing action in government, business and civil society to promote a recoupling of economic and social progress.
+
+<div align="center">
+<img src="downloads/d.png" width=350>
+</div>
+
+
+]
+
+.pull-right[
+
+- **Solidarity** covers the need for social belonging and embeddedness in the society.
+- **Agency** covers the need to influence one's own fate through one's own efforts.
+- **Material Gains** is GDP.
+- **Environmental sustainability** is formed by the conventional measure of CO2 emissions.
+
+]
+
+
+---
+
+# A
+
+
+
+
+
+
+
+
+---
+
+# A
+
+
+class: center, middle
+
+.pull-left[
+- Solidarity and Agency
+
+
+]
+
+
+.pull-right[
+
+<div align="center">
+<img src="downloads/a.png" width=700>
+</div>
+]
+
+
+---
+
+# A
+
+
+
+
+
+
+
+---
+
+# A
+
+
+
+
+
+
+
+
+
+
+---
+
+# A
+
+
+
+
+
+
+
+
+
+---
+
+# References
+
+`*Friedman, B. (2005). The Moral Consequences of Economic Growth`
+
+
+	 The Moral Consequences of Economic Growth (2005)
+
+
+---
+
+
+
+
+
+---
+
+A common question to measure wellbeing is simply to ask people to evaluate their own lives
+
+Carol Graham of the Brookings Institution
+“people who believe in their futures are far more likely to invest in them”
+hope triggers positive action
+
+We can make more responsible choices
+
+
+Solidarity covers the need for social belonging and embeddedness in the society
+agency covers the need to influence one's own fate through one's own efforts.
+GDP
+environmental sustainability are conventional and receive little further attention
+
+In our solidarity index, country performance is measured across the key components social support, giving behavior, satisfationn with efforts to deal with the poor and minority rights.
+
+agency is composed of confidence in empowering institutions, freedom of life choice, vulnerable employment and life expectancy
+
+Where the SAGE Dashboard breaks ground is in its focus on solidarity and agency as fundamenta social characteristics shedding light on both well being and society's
+
+In Sum, SAGE aims to capture components of well-being that people are especially inclined to act on.
+
+---
+
+
+
+
+
+
+
+
