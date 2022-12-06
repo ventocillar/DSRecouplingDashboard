@@ -1,0 +1,455 @@
+---
+title: "Paper - SDGs and SAGE"
+author: "Global Solutions Initiative"
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: lumen
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  pdf_document: default
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}   
+  
+library(scales)
+library(tidyverse)
+library(dplyr)
+library(haven)
+library(forcats)
+library(foreign)
+library(readr)
+library(readxl)
+library(tibble)
+library(naniar)
+library(viridis)
+library(ggsci)
+library(ggplot2)
+library(purrr)
+library(fmsb)
+library(viridisLite)
+library(writexl)
+library(MetBrewer)
+library(ftplottools)
+library(plotly)
+library(hrbrthemes)
+library(NatParksPalettes)
+library(Manu)
+library(kableExtra)
+
+```
+
+
+```{r, echo = FALSE, results = 'hide', warning = FALSE, message = FALSE}
+
+
+SDR_SAGE <- read_excel("SDR_SAGE.xlsx")
+
+SDR_SAGE$Country[SDR_SAGE$Country == "Korea, Dem. Rep."] <- "North Korea"
+SDR_SAGE$income_group[is.na(SDR_SAGE$income_group)] <- "Low income"
+SDR_SAGE$continent[is.na(SDR_SAGE$continent)] <- "East Asia & Pacific"
+view(SDR_SAGE)
+
+
+```
+
+
+
+# Abstract
+
+
+# Introduction
+
+The Sustainable Development Goals (SDGs) are the core of the 2030 “Agenda for Sustainable Development,” developed by the United Nations in 2015 to measure the progress of poverty eradication. They aim to improve the overall health and education of all societies, decrease inequality and guarantee economic growth that is compatible with the sustainability of the environment, that extends from preserving biodiversity to halting climate change.
+
+This report aims to aggregate the seventeen development goals into four different indexes and compare them with the key dimensions of the SAGE. The SAGE framework is a method to assess economic, social, and environmental well-being. It focuses not solely on the dynamic of development through production, but also the sustainability of life and impact of humans in their lives and communities. 
+
+SAGE align with the SDGs as both methods envision overall the idea of happier life, ranging from improving well-being in society to the challenges of development without causing further harm to the environment. 
+
+Thus, we will try to correlate the SDGs with the SAGE framework. The main procedure is to separate the indicators from the Sustainable Development Goals, analyze the data available, transform it into a variable compatible with the SAGE framework and detect possible convergences or contrasts.
+
+Since the “Recover Together, Recover Stronger” G20 in Indonesia , the SDGs were separated and reorganized according to the SAGE aspects of the Recoupling Dashboard (2021).
+
+The available data and the unused ones are listed at the “Methodological Note” section.
+
+
+## Solidarity
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+ggplot(SDR_SAGE, aes(x = solidarity_mean, y = sol_index)) + geom_point(color = "indianred4", alpha = .6) + 
+  labs(title = "Relation between the Solidarity of the SDGs and the Recoupling Dashboard") + theme(plot.title = element_text(lineheight = 0.5)) + 
+  labs(x = "Solidarity and Inclusion from the SDGs", y = "Solidarity from the Recoupling Dashboard") + theme_minimal() +
+  geom_smooth(method = "lm", color = "brown4", fill = "coral3") 
+  
+
+```
+
+## Agency
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+ggplot(SDR_SAGE, aes(x = agency_mean, y = ag_index)) + geom_smooth(method = "lm", color = "royalblue", fill = "steelblue") + 
+  geom_point(color = "steelblue4", alpha = .7) + labs(title = "Relation between the Agency of the SDGs and the Recoupling Dashboard") + 
+  theme(plot.title = element_text(lineheight = 0.5)) + labs(x = "Agency and Resilience from the SDG", y = "Agency from the Recoupling Dashboard") + 
+  theme_minimal()
+
+```
+
+# Analyzing the data
+
+## Solidarity
+
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+  Gtwenty <- SDR_SAGE %>%
+  filter(g20 == 1) %>%
+  mutate(rowname = factor(Country, Country)) %>%
+  mutate(twentymean = mean(solidarity_mean, na.rm = TRUE)) %>%
+  select(rowname, solidarity_mean, twentymean) %>%
+  pivot_longer(cols = -rowname, names_to = "solidarity", values_to = "number")
+
+
+  ggplot(Gtwenty, aes(x = number, y = reorder(rowname, number), color = solidarity)) + geom_point(size = 2) + theme_ipsum() + geom_line(color = "darkgrey") + scale_color_manual(name = "Solidarity", values = met.brewer("Navajo", 2), labels = c("Solidarity Mean", "G20 Average")) +
+  theme(
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.y = element_blank(),
+      axis.text = element_text(size = 48)) + 
+  labs(x = "Solidarity Index", y = "G20 Country") + 
+    geom_vline(xintercept = 100, color = "darkred") +
+    geom_vline(xintercept = 61.60433, color = "bisque3") +
+    scale_x_continuous(limits = c(0, 100))
+
+
+```
+
+## Agency
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+  Agtwenty <- SDR_SAGE %>%
+  filter(g20 == 1) %>%
+  mutate(rowname = factor(Country, Country)) %>%
+  mutate(twentymean = mean(agency_mean, na.rm = TRUE)) %>%
+  select(rowname, agency_mean, twentymean) %>%
+  pivot_longer(cols = -rowname, names_to = "agency", values_to = "number")
+
+
+
+  ggplot(Agtwenty, aes(x = number, y = reorder(rowname, number), color = agency)) + geom_point(size = 2) + theme_ipsum() + geom_line(color = "darkgrey") + scale_color_manual(name = "Agency", values = met.brewer("Hokusai2", 2, direction = -1), labels = c("Agency Mean", "G20 Average")) +
+  theme(
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.y = element_blank(),
+      axis.text = element_text(size = 48)) + 
+  labs(x = "Agency Index", y = "G20 Country") + 
+    geom_vline(xintercept = 100, color = "darkred") +
+    geom_vline(xintercept = 68.47382 , color = "steelblue3") +
+    scale_x_continuous(limits = c(0, 100))
+
+
+
+```
+
+
+## Material Gains
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+  SDR_SAGE %>%
+  filter(g20 == 1) %>%
+  mutate(rowname = factor(Country, Country)) %>%
+  mutate(twentymean = mean(matgain_mean, na.rm = TRUE)) %>%
+  select(rowname, matgain_mean, twentymean) %>%
+  pivot_longer(cols = -rowname, names_to = "mg", values_to = "number") %>%
+  ggplot(aes(x = number, y = reorder(rowname, number), color = mg)) + geom_point(size = 2, alpha = 0.9) + theme_ipsum() + geom_line(color = "darkgrey") + scale_color_manual(name = "Material Gains", values = met.brewer("Kandinsky", 2), labels = c("Material Gains Mean", "G20 Average")) +
+  theme(
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.y = element_blank(),
+      axis.text = element_text(size = 48)) + 
+      labs(x = "Material Gains Index", y = "G20 Country") +
+    geom_vline(xintercept = 100, color = "darkred") +
+    geom_vline(xintercept = 66.54615, color = "burlywood3") +
+    scale_x_continuous(limits = c(0, 100))
+
+
+
+```
+
+## Environment
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+  SDR_SAGE %>%
+  filter(g20 == 1) %>%
+  mutate(rowname = factor(Country, Country)) %>%
+  mutate(twentymean = mean(environment_mean, na.rm = TRUE)) %>%
+  select(rowname, environment_mean, twentymean) %>%
+  pivot_longer(cols = -rowname, names_to = "environment", values_to = "number") %>%
+  ggplot(aes(x = number, y = reorder(rowname, number), color = environment)) + geom_point(size = 2, alpha = 0.8) + scale_color_manual(name = "Environment", values = met.brewer("Cassatt2", 2), labels = c("Environment Mean", "G20 Average")) + theme_ipsum() + geom_line(color = "darkgrey") + 
+  theme(
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.y = element_blank(),
+      axis.text = element_text(size = 48)) + 
+      labs(x = "Environmental Sustainability Index", y = "Country") +
+    geom_vline(xintercept = 100, color = "darkred") +
+    geom_vline(xintercept = 72.87998, color = "darkorchid4") +
+  scale_x_continuous(limits = c(0, 100))
+
+
+
+```
+
+# Societies
+
+## Solidarity
+  
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+SDR_SAGE %>%
+  ggplot(aes(x = solidarity_mean, y = agency_mean)) +
+  geom_point(color = "chocolate4") +
+  theme_minimal() + geom_hline(aes(yintercept = mean(world_agmean)), color = "wheat4") + geom_vline(aes(xintercept = mean(world_solmean)), color = "sienna2") + labs(title = "Correlation between Solidarity and Agency among the SDGs", x = "Solidarity mean", y = "Agency mean") + 
+      annotate("rect", xmin = Inf, xmax = 61.60433, ymin = Inf, ymax = 68.47382, fill= "sienna1", alpha = 0.3)  + 
+      annotate("rect", xmin = -Inf, xmax = 	61.60433, ymin = -Inf, ymax = 68.47382, fill= "sienna4", alpha = 0.5) + 
+      annotate("rect", xmin = 	61.60433, xmax = Inf, ymin = 68.47382, ymax = -Inf, fill= "wheat3", alpha = 0.3) + 
+      annotate("rect", xmin = 	61.60433, xmax = -Inf, ymin = Inf, ymax = 68.47382, fill= "wheat1", alpha = 0.3)
+
+``` 
+
+# Time Series
+
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+sdr_22 <- read_excel("SDR-2022-database.xlsx", sheet = 7)
+
+sdr_22$Country[sdr_22$Country == "Bosnia and Herzegovina"] <- "Bosnia Herzegovina"
+
+sdr_22$Country[sdr_22$Country == "Cote d'Ivoire"] <- "Ivory Coast"
+
+sdr_22$Country[sdr_22$Country == "Egypt, Arab Rep."] <- "Egypt"
+
+sdr_22$Country[sdr_22$Country == "Gambia, The"] <- "Gambia"
+
+sdr_22$Country[sdr_22$Country == "Iran, Islamic Rep."] <- "Iran"
+
+sdr_22$Country[sdr_22$Country == "Kyrgyz Republic"] <- "Kyrgyzstan"
+
+sdr_22$Country[sdr_22$Country == "Korea, Rep."] <- "South Korea"
+
+sdr_22$Country[sdr_22$Country == "Korea, Dem. Rep."] <- "North Korea"
+
+sdr_22$Country[sdr_22$Country == "Lao PDR"] <- "Laos"
+
+sdr_22$Country[sdr_22$Country == "Russian Federation"] <- "Russia"
+
+sdr_22$Country[sdr_22$Country == "Slovak Republic"] <- "Slovakia"
+
+sdr_22$Country[sdr_22$Country == "Syrian Arab Republic"] <- "Syria"
+
+sdr_22$Country[sdr_22$Country == "Venezuela, RB"] <- "Venezuela"
+
+sdr_22$Country[sdr_22$Country == "Yemen, Rep."] <- "Yemen"
+
+sdr_22_filt <- sdr_22 %>%
+select(`Country`, `Year`, `Region`, `Income Group`, `SDG Index Score`, `Goal 1 Score`, `Goal 2 Score`, `Goal 3 Score`, `Goal 4 Score`, `Goal 5 Score`, `Goal 6 Score`, `Goal 7 Score`, `Goal 8 Score`, 
+       `Goal 9 Score`, `Goal 10 Score`, `Goal 11 Score`, `Goal 12 Score`, `Goal 13 Score`, `Goal 14 Score`, `Goal 15 Score`, `Goal 16 Score`, `Goal 17 Score`)
+
+    
+names(sdr_22_filt) <- c("Country", "Year", "Region", "Income", "SDG_score", "SDG1", "SDG2", "SDG3", "SDG4", "SDG5", "SDG6", "SDG7", "SDG8", "SDG9", "SDG10", "SDG11", "SDG12",
+                        "SDG13", "SDG14", "SDG15", "SDG16", "SDG17")
+view(sdr_22_filt)
+
+G20 <- c("Argentina", "India", "Canada", "Germany", "France", "Australia", "Saudi Arabia", "United Kingdom", "Japan", "South Korea", "Italy", "Russia", "United States", "South Africa", "Brazil", "Mexico", "Indonesia", "Turkey", "China")
+
+sdr22_g20 <- sdr_22_filt %>%
+  filter(Country %in% G20)
+
+Sol <- sdr22_g20 %>%
+  select("Country", "Year", "SDG5", "SDG10", "SDG11", "SDG17")
+
+
+Sol_ts <- Sol %>%
+dplyr::mutate(solidarity_sdr = rowMeans(Sol[, -c(1:2)], na.rm = TRUE)) 
+
+TS <- Sol_ts %>%
+group_by(Year) %>%
+summarize(mean(SDG5), mean(SDG10), mean(SDG11), mean(SDG17), mean(solidarity_sdr))
+     
+          
+TS$Country <- "G-20"
+
+TS <- TS[, c("Country", "Year", "mean(SDG5)", "mean(SDG10)", "mean(SDG11)", "mean(SDG17)", "mean(solidarity_sdr)")]
+names(TS) <- c("Country", "Year", "SDG5", "SDG10", "SDG11", "SDG17", "solidarity_sdr")
+          
+Solidarity <- rbind(Sol_ts, TS)
+
+```
+
+## Solidarity
+
+### Facet
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+sol_faceted <- Solidarity %>% 
+  group_by(Year) %>%
+  ggplot(aes(x = Year, y = solidarity_sdr, color = Country)) + geom_line() + facet_wrap(~ Country) + theme_minimal() +
+  labs(title = "Solidarity using the SDR for individual countries in the G20") + labs(x = "Year", y = "Solidarity SDR") +
+  theme(plot.title = element_text(lineheight = 0.5)) + scale_y_continuous(limits = c(0, 100)) + scale_x_continuous(limits = c(2000, 2021), breaks = c(2000, 2006, 2012, 2018)) + theme(legend.position = "none") 
+  
+sol_faceted
+
+```
+
+### The time series of Solidarity
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+Sol_tly <- plot_ly(data = Solidarity, x = ~Year, y = ~solidarity_sdr, color = ~Country, type = 'scatter', mode = 'lines', text = ~Country, colors = "Dark2")
+
+Sol_tly %>%
+config(displayModeBar = FALSE) %>%
+   layout(yaxis = list(title = 'Solidarity SDR'), xaxis = list(title = "Year"))
+
+```
+
+## Agency
+
+### Agency in facets 
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+Agen <- sdr22_g20 %>%
+  select("Country", "Year", "SDG2", "SDG3", "SDG4", "SDG6", "SDG16")
+
+Agen_ts <- Agen %>%
+dplyr::mutate(agency_sdr = rowMeans(Agen[, -c(1:2)], na.rm = TRUE)) 
+
+Agen_TS <- Agen_ts %>%
+group_by(Year) %>%
+summarize(mean(SDG2), mean(SDG3), mean(SDG4), mean(SDG6), mean(SDG16), mean(agency_sdr))
+          
+Agen_TS$Country <- "G-20"
+
+Agen_TS <- Agen_TS[, c("Country", "Year", "mean(SDG2)", "mean(SDG3)", "mean(SDG4)", "mean(SDG6)", "mean(SDG16)", "mean(agency_sdr)")]
+
+names(Agen_TS) <- c("Country", "Year", "SDG2", "SDG3", "SDG4", "SDG6", "SDG16", "agency_sdr")
+
+Agency <- rbind(Agen_ts, Agen_TS)
+
+Agency %>% 
+  group_by(Year) %>%
+  ggplot(aes(x = Year, y = agency_sdr, color = Country)) + geom_line() + facet_wrap(~ Country) + theme_minimal() +
+  labs(title = "Agency using the SDR for individual countries in the G20") + labs(x = "Year", y = "Agency") +
+  theme(plot.title = element_text(lineheight = 0.5)) + scale_y_continuous(limits = c(0, 100)) + scale_x_continuous(limits = c(2000, 2021), breaks = c(2000, 2006, 2012, 2018)) + theme(legend.position = "none") 
+
+
+```
+
+### The time series of Agency 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+Agen_tly <- plot_ly(data = Agency, x = ~Year, y = ~agency_sdr, color = ~Country, type = 'scatter', mode = 'lines', text = ~Country, colors = "Dark2")
+
+Agen_tly %>%
+config(displayModeBar = FALSE) %>%
+   layout(yaxis = list(title = 'Agency SDR'), xaxis = list(title = "Year"))
+
+```
+
+## Material Gains
+
+### Material Gains in Facets
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+Mat <- sdr22_g20 %>%
+  select("Country", "Year", "SDG1", "SDG7", "SDG8", "SDG9", "SDG12")
+
+Mat_ts <- Mat %>%
+dplyr::mutate(matgain_sdr = rowMeans(Mat[, -c(1:2)], na.rm = TRUE)) 
+
+Mat_TS <- Mat_ts %>%
+group_by(Year) %>%
+summarize(mean(SDG1), mean(SDG7), mean(SDG8), mean(SDG9), mean(SDG12), mean(matgain_sdr))
+
+Mat_TS$Country <- "G-20"
+
+Mat_TS <- Mat_TS[, c("Country", "Year", "mean(SDG1)", "mean(SDG7)", "mean(SDG8)", "mean(SDG9)", "mean(SDG12)", "mean(matgain_sdr)")]
+
+names(Mat_TS) <- c("Country", "Year", "SDG1", "SDG7", "SDG8", "SDG9", "SDG12", "matgain_sdr")
+
+MatGain <- rbind(Mat_ts, Mat_TS)
+
+MatGain %>% 
+  group_by(Year) %>%
+  ggplot(aes(x = Year, y = matgain_sdr, color = Country)) + geom_line() + facet_wrap(~ Country) + theme_minimal() +
+  labs(title = "Material Gains using the SDR for individual countries in the G20") + labs(x = "Year", y = "Material Gains") + 
+  theme(plot.title = element_text(lineheight = 0.5)) + scale_y_continuous(limits = c(0, 100)) + scale_x_continuous(limits = c(2000, 2021), breaks = c(2000, 2006, 2012, 2018)) + theme(legend.position = "none") 
+
+
+```
+
+### Time Series of Material Gains
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+MatGain_tly <- plot_ly(data = MatGain, x = ~Year, y = ~matgain_sdr, color = ~Country, type = 'scatter', mode = 'lines', text = ~Country, colors = "Dark2")
+
+MatGain_tly %>%
+config(displayModeBar = FALSE) %>%
+   layout(yaxis = list(title = 'Material Gains SDR'), xaxis = list(title = "Year"))
+
+```
+
+## Environmental Sustainability
+
+### Environment in Facets
+
+```{r, echo = FALSE, results='hide', warning=FALSE, message=FALSE}
+
+Envi <- sdr22_g20 %>%
+  select("Country", "Year", "SDG13", "SDG14", "SDG15")
+
+Envi_ts <- Envi %>%
+dplyr::mutate(envi_sdr = rowMeans(Envi[, -c(1:2)], na.rm = TRUE)) 
+
+Envi_TS <- Envi_ts %>%
+group_by(Year) %>%
+summarize(mean(SDG13), mean(SDG14), mean(SDG15), mean(envi_sdr))
+
+Envi_TS$Country <- "G-20"
+
+
+Envi_TS <- Envi_TS[, c("Country", "Year", "mean(SDG13)", "mean(SDG14)", "mean(SDG15)", "mean(envi_sdr)")]
+names(Envi_TS) <- c("Country", "Year", "SDG13", "SDG14", "SDG15", "envi_sdr")
+
+SustEnvi <- rbind(Envi_ts, Envi_TS)
+
+SustEnvi %>%
+  group_by(Year) %>%
+  ggplot(aes(x = Year, y = envi_sdr, color = Country)) + geom_line() + facet_wrap(~ Country) + theme_minimal() +
+  labs(title = "Environmental Sustainability using the SDR for individual countries in the G20") + labs(x = "Year", y = "Environmental Sustainability") + 
+  theme(plot.title = element_text(lineheight = 0.5)) + scale_y_continuous(limits = c(0, 100)) + scale_x_continuous(limits = c(2000, 2021), breaks = c(2000, 2006, 2012, 2018)) + theme(legend.position = "none") 
+
+```
+
+### Environment in Time Series
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+Envi_tly <- plot_ly(data = SustEnvi, x = ~Year, y = ~envi_sdr, color = ~Country, type = 'scatter', mode = 'lines', text = ~Country, colors = "Dark2")
+
+Envi_tly %>%
+config(displayModeBar = FALSE) %>%
+   layout(yaxis = list(title = 'Environmental Sustainability SDR'), xaxis = list(title = "Year"))
+
+```
